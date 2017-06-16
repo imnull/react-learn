@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>component</title>
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<pre>
+
+</pre>
+
+
+<script type="text/babel">
+
+var HelloMessage = React.createClass({
+	render: function() {
+		return <h1>Hello {this.props.name}. Your age is {this.props.age}.</h1>;
+	}
+});
+
+ReactDOM.render(
+	<HelloMessage name="John" age="21" />,
+	document.getElementById('root')
+);
+
+</script>
+
+</body>
+</html>
