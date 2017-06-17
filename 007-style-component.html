@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Using External Plugins</title>
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+<style type="text/css">
+
+textarea, div.output{
+	width: 300px;
+	height: 100px;
+	resize: none;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	outline: none;
+	word-break: break-all;
+	padding: 1em;
+	overflow: auto;
+}
+
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/javascript">
+
+var LocationStyleRender = {
+	keys: [
+		{ name: 'left', defaultValue: 0 }
+		, { name: 'top', defaultValue: 0 }
+		, { name: 'width', defaultValue: 50, isSize: 1 }
+		, { name: 'height', defaultValue: 50, isSize: 1 }
+	],
+	extStyle: {
+		position: 'absolute',
+		backgroundColor: '#999'
+	},
+	config: function(extConf){
+		var r = {};
+		if(!LocationStyleRender.isObject(extConf)) extConf = {};
+
+		LocationStyleRender.keys.forEach(function(item){
+			r[item.name] = LocationStyleRender.getNumber(
+				extConf[item.name]
+				, item.defaultValue
+				, item.isSize
+				);
+		});
+		
+		return r;
+	},
+	render: function(conf){
+		var configure = LocationStyleRender.config(conf);
+		var r = {};
+		for(var p in configure){
+			r[p] = configure[p] + 'px';
+		}
+		for(var p in LocationStyleRender.extStyle){
+			r[p] = p in configure ? configure[p] : LocationStyleRender.extStyle[p];
+		}
+		return r;
+	},
+	isValidNumber: function(i){
+		return typeof(i) === 'number' && !isNaN(i);
+	},
+	isValidSizeNumber: function(i){
+		return LocationStyleRender.isValidNumber(i) && i > 0;
+	},
+	isObject: function(v){
+		return Object.prototype.toString.call(v) === '[object Object]';
+	},
+	getNumber: function(v, defaultValue, isSize){
+		var m = !isSize 
+			? LocationStyleRender.isValidNumber 
+			: LocationStyleRender.isValidSizeNumber
+			;
+		if(typeof(v) != 'number') v = parseFloat(v);
+		return m(v) ? v : defaultValue;
+	}
+};
+
+</script>
+
+<pre>
+NOTE:
+
+事件绑定或者setState有点延迟，原因不明。
+</pre>
+
+
+<script type="text/babel">
+
+class WidgetContainer extends React.Component{
+
+	constructor(props){
+		super(props);
+		var state = LocationStyleRender.config(props);
+		state.moveStartX = -1;
+		state.moveStartY = -1;
+		state.dragStatus = 0;
+
+		this.state = state;
+
+		this.mouseDownHandle = this.mouseDownHandle.bind(this);
+		this.mouseMoveHandle = this.mouseMoveHandle.bind(this);
+		this.mouseUpHandle = this.mouseUpHandle.bind(this);
+
+	}
+
+	runtimeStyle(){
+		return LocationStyleRender.render(this.state);
+	}
+
+	componentWillMount(){
+	}
+
+	mouseDownHandle(e){
+		//e.persist();
+		var pos = {
+			moveStartX: e.clientX,
+			moveStartY: e.clientY,
+			dragStatus: 1
+		};
+		this.setState(pos);
+	}
+	mouseMoveHandle(e){
+		if(this.state.dragStatus === 0){
+			return;
+		}
+		console.log(this.state.moveStartX);
+	}
+	mouseUpHandle(e){
+		this.setState({
+			dragStatus: 0
+		})
+	}
+
+	render(){
+		let st = this.runtimeStyle();
+		return (<div
+		onMouseDown={this.mouseDownHandle}
+		onMouseMove={this.mouseMoveHandle}
+		onMouseUp={this.mouseUpHandle}
+		style={{
+			left:st.left,
+			top:st.top,
+			width:st.width,
+			height:st.height,
+			backgroundColor:st.backgroundColor,
+			position:st.position,
+		}}></div>);
+	}
+}
+
+ReactDOM.render(
+	<WidgetContainer width="150" height="20" />
+	, document.getElementById('root')
+)
+
+</script>
+
+</body>
+</html>

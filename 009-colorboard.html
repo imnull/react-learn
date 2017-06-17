@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ECharts</title>
+
+<link rel="stylesheet" type="text/css" href="./css/spectrum.css">
+
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+
+<script src="./lib/jquery-1.9.1.js"></script>
+<script src="./lib/spectrum.js"></script>
+
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript">
+
+</script>
+
+<script type="text/babel">
+
+class ColorButton extends React.Component{
+	
+	constructor(props){
+		super(props);
+		this.state = { color: props.color || '#fff' };
+		this.inputChangeHandle = this.inputChangeHandle.bind(this);
+	}
+
+	inputChangeHandle(e){
+		this.setState({
+			color: e.target.value
+		})
+	}
+
+	render(){
+		return (<div className="tool-color-board">
+			<label>{this.props.title}</label>
+			<input onChange={this.inputChangeHandle} ref="color" type="color" value={this.state.color} />
+		</div>);
+	}
+
+}
+
+
+ReactDOM.render(React.createElement(ColorButton, {
+	title: 'Fore Color: ',
+	color: '#003399'
+}), document.getElementById('container'));
+
+</script>
+
+</body>
+</html>
