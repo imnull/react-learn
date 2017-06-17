@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Application</title>
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<pre>
+NOTE:
+
+=1=
+这里input节点的onChange需要注意。
+由于该节点的value绑定了state.text，所以当在input中输入内容的时候，input并不会显示输入内容。
+应该是如下步骤：
+1.DOM层输入内容
+2.React收取输入内容，更改state.text
+3.state.text绑定至input.value
+所以在绑定input的value时，必须在onChange中实现内容的输入。
+
+=2=
+DOM绑定事件的函数，上下文为undefined。
+所以如果需要调用对象本身，相应的DOM事件应在构造函数中首先绑定对象本身。
+
+=3=
+此例中，onChange事件可以用onInput事件替代。
+</pre>
+
+
+<script type="text/babel">
+
+class TodoList extends React.Component{
+	render(){
+		return (<ol>
+			{this.props.items.map((item)=>(
+				<li key={item.id}>{item.text}</li>
+			))}
+		</ol>)
+	}
+}
+
+class TodoApp extends React.Component{
+	
+	constructor(props){
+		super(props);
+		this.setText = this.setText.bind(this);
+		this.addItem = this.addItem.bind(this);
+		this.inputText = this.inputText.bind(this);
+		this.state = { items: [], text: '' };
+	}
+
+	render(){
+		return (<div>
+			<h3>{this.props.title}</h3>
+			<input onInput={this.inputText} onChange={this.setText} type="text" value={this.state.text} />
+			<button onClick={this.addItem}>{this.props.buttonText}</button>
+			<TodoList items={this.state.items} />
+		</div>);
+	}
+
+	inputText(e){
+		//this.setState({ text: e.target.value });
+	}
+
+	setText(e){
+		this.setState({ text: e.target.value });
+	}
+
+	addItem(e){
+		let item = {
+			text: this.state.text,
+			id: Date.now()
+		};
+		this.setState((prevState) => ({
+			items: prevState.items.concat(item),
+			text: ''
+		}));
+	}
+
+}
+
+ReactDOM.render(
+	<TodoApp title="标题" buttonText="添加" />
+	, document.getElementById('root')
+)
+
+</script>
+
+</body>
+</html>
