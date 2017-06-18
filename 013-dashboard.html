@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ECharts Dashboard</title>
+
+
+<script type="text/javascript" src="./react/react.js"></script>
+<script type="text/javascript" src="./react/react-dom.js"></script>
+<script type="text/javascript" src="./react/babel.min.js"></script>
+
+<script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>
+<script src="./lib/echarts.min.js"></script>
+
+<script type="text/babel" src="./jsx/x-ui.jsx"></script>
+
+<style type="text/css">
+
+body{
+	margin: 0px;
+}
+.x-dashboard-title{
+	background-color: #666;
+	color: #f1f1f1;
+	margin: 0px;
+	height: 2em;
+	line-height: 2em;
+	text-indent: 1em;
+}
+
+pre{
+	background-color: #eee;
+	border: 1px solid #ccc;
+	padding: 1em;
+	border-radius: 5px;
+}
+
+.x-dashboard-container, .x-dashboard-container li, .x-dashboard-container li h3{
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+.x-dashboard-container li h3{
+	font-size: 12px;
+}
+
+.x-dashboard-container li input{
+	display: block;
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	font-size: 11px;
+	top: 5px;
+	right: 5px;
+	padding: 0px;
+}
+
+.x-dashboard-container{
+	/*border: 1px solid #000;*/
+	position: absolute;
+	background-color: #ccc;
+	transform-origin: 0px 0px;
+	transform: scale(0.5, 0.5);
+	width: 200%;
+}
+.x-dashboard-container li{
+	background-color: #ddd;
+	position: relative;
+	margin: 5px;
+	margin-right: 0px;
+	padding: 5px;
+	display: inline-block;
+	width: 550px;
+	height: 450px;
+}
+
+.x-widget-content{
+	position: absolute;
+	border: 1px solid #fff;
+	top: 30px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+	background-color: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<pre style="display:none">
+数据标准:
+{
+	id: [unique string],
+	chartType: [Enum chartType],
+	chartName: [string]
+}
+
+子组件接口:
+{
+	onClosing: function(Component sender, Event e)
+}
+</pre>
+
+<div id="container"></div>
+
+<script type="text/javascript">
+
+function loadEChart(dom, option){
+	var myChart = echarts.init(dom);
+	myChart.setOption(option);
+}
+
+</script>
+
+
+<script type="text/babel">
+
+class XWidget extends React.Component{
+	
+	closeHandle(sender, eventProxy){
+		if(typeof(this.props.onClosing) === 'function'){
+			this.props.onClosing(this, eventProxy);
+		}
+	}
+
+	componentDidMount(){
+		// var jsonFile = 'echart' + 40 + '.json';
+		var jsonFile = 'echart' + this.props.chartType + '.json';
+		jsonFile = './data/example/' + jsonFile;
+		jsonFile += '?t=' + Date.now();
+
+		$.getJSON(jsonFile, function(json, success) {
+			if(success != 'success') return;
+
+			loadEChart(this.refs.content, json);
+
+		}.bind(this));
+	}
+
+
+	render(){
+		return (<li className={this.props.className || 'x-widget'}>
+			<h3>{this.props.chartName}</h3>
+			<XButton text="X" className="button-close" onClick={this.closeHandle.bind(this)} />
+			<div className="x-widget-content" ref="content"></div>
+		</li>);
+	}
+}
+
+
+
+ReactDOM.render(React.createElement(XDashboard, {
+	title: 'ECharts Dashboard',
+	addButtonText: '添加',
+	clearButtonText: '清空',
+	defaultChartType: 20,
+	urlChartTypes: './data/example/e1.json',
+	ChildrenType: XWidget
+})
+, document.getElementById('container'));
+
+</script>
+
+</body>
+</html>

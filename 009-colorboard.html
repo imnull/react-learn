@@ -112,21 +112,31 @@ class ColorButtonList extends React.Component{
 
 	render(){
 		return (<div className="tool-color-list">
-			<input onChange={this.inputOnChangeHandle} type="text" value={this.state.title} />
-			<button onClick={this.buttonClickHandle}>{this.state.buttonText}</button>
-			<ul>
-				{this.state.items.map((item, i) => {
-					return i > 0 
-						? (<li key={item.id}>
-						<input onChange={this.colorOnChangeHanndle} data-key={item.id} value={item.color} type="color" />
-						<button data-key={item.id} onClick={this.removeItemHandle}>X</button>
-						</li>)
-						: (<li key={item.id}>
-						<input onChange={this.colorOnChangeHanndle} data-key={item.id} value={item.color} type="color" />
-						</li>)
-						;
-				}
-				)}
+		<input onChange={this.inputOnChangeHandle} type="text" value={this.state.title} />
+		<button onClick={this.buttonClickHandle}>{this.state.buttonText}</button>
+		<ul>
+		{this.state.items.map((item, i) => {
+			return i > 0 
+				? (<li key={item.id}>
+				<input
+					onChange={this.colorOnChangeHanndle}
+					data-key={item.id}
+					value={item.color}
+					type="color"
+					/>
+				<button data-key={item.id} onClick={this.removeItemHandle}>X</button>
+				</li>)
+				: (<li key={item.id}>
+				<input
+					onChange={this.colorOnChangeHanndle}
+					data-key={item.id}
+					value={item.color}
+					type="color"
+					/>
+				</li>)
+				;
+			}
+			)}
 			</ul>
 		</div>);
 	}
