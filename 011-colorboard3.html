@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Color Picker</title>
+
+<link rel="stylesheet" type="text/css" href="./lib/colorpicker/colorpicker.css">
+<link rel="stylesheet" type="text/css" href="./lib/colorpicker/layout.css">
+
+<script type="text/javascript" src="./lib/colorpicker/jquery.js"></script>
+<script type="text/javascript" src="./lib/colorpicker/colorpicker.js"></script>
+<script type="text/javascript" src="./lib/colorpicker/eye.js"></script>
+<script type="text/javascript" src="./lib/colorpicker/utils.js"></script>
+<script type="text/javascript" src="./lib/colorpicker/layout.js?ver=1.0.2"></script>
+
+
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<div id="colorSelector2">
+	<div></div>
+</div>
+
+
+<script type="text/javascript">
+// $('#container').ColorPicker({flat: true, color: '#0000ff'});
+$('#colorSelector2').ColorPicker({
+	color: '#0000ff',
+	onChange: function (hsb, hex, rgb) {
+		$('#colorSelector2 div').css('backgroundColor', '#' + hex);
+	}
+});
+
+
+
+</script>
+
+
+</body>
+</html>

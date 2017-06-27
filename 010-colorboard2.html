@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ECharts</title>
+
+<!-- <link rel="stylesheet" type="text/css" href="./css/spectrum.css">
+
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+
+
+<script src="./lib/spectrum.js"></script> -->
+<script src="./lib/jquery-1.9.1.js"></script>
+
+<style type="text/css">
+canvas{
+	border: 1px solid #000;
+}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<canvas id="c1" width="256" height="256"></canvas>
+<canvas id="c2" width="30" height="256"></canvas>
+
+<script type="text/javascript">
+
+function DrawRG(canvas, B){
+	var ctx = canvas.getContext('2d'), w = canvas.width, h = canvas.height;
+	// console.log(ctx)
+	// var linearGradient = ctx.createLinearGradient(w,0,0,h);
+	// linearGradient.addColorStop(0, 'rgb(255,255,' + B + ')');
+	// linearGradient.addColorStop(1, 'rgb(0,0,' + B + ')');
+	// ctx.save();
+	// ctx.beginPath();
+	// ctx.rect(0, 0, w, h);
+	// ctx.fillStyle = linearGradient;
+	// ctx.fill();
+	// ctx.restore();
+	var imgData = ctx.getImageData(0, 0, w, h);
+
+	ctx.clearRect(0, 0, w, h);
+
+	for(var i = 0, idx = 0, H, V, D; i < imgData.data.length; i += 4){
+
+		idx = i / 4;
+
+		H = 255 - idx % w;
+		V = 255 - ((idx / w) >> 0);
+		D = (H * (V / 255)) >> 0;
+
+		imgData.data[i] = V;
+		imgData.data[i + 1] = D;
+		imgData.data[i + 2] = D;
+		imgData.data[i + 3] = 255;
+	}
+	console.log(imgData)
+	ctx.putImageData(imgData, 0, 0);
+
+}
+
+DrawRG(document.getElementById('c1'), 0);
+
+</script>
+
+
+</body>
+</html>

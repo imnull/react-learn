@@ -1,0 +1,8 @@
+{
+	"chartTypes": [
+		{ "name": "柱状图", "type": 10 },
+		{ "name": "饼图", "type": 20 },
+		{ "name": "折线图", "type": 30 },
+		{ "name": "散点图", "type": 40 }
+	]
+}

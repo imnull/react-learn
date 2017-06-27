@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ECharts</title>
+
+<link rel="stylesheet" type="text/css" href="./css/spectrum.css">
+
+<script type="text/javascript" src="./react/react.js"></script>
+<script type="text/javascript" src="./react/react-dom.js"></script>
+<script type="text/javascript" src="./react/babel.min.js"></script>
+
+<script type="text/babel" src="./jsx/x-ui.jsx"></script>
+
+<style type="text/css">
+
+pre{
+	background-color: #eee;
+	border: 1px solid #ccc;
+	padding: 1em;
+	border-radius: 5px;
+}
+
+</style>
+</head>
+<body>
+
+<pre>
+数据标准:
+{
+	id: [unique string],
+	text: [plain text]
+}
+
+子组件接口:
+{
+	onClosing: function(Component sender, Event e)
+}
+</pre>
+
+<div id="container"></div>
+
+<script type="text/javascript">
+
+</script>
+
+
+
+<script type="text/babel">
+
+class XListItem extends React.Component{
+	
+	closeHandle(sender, eventProxy){
+		if(typeof(this.props.onClosing) === 'function'){
+			this.props.onClosing(this, eventProxy);
+		}
+	}
+
+	render(){
+		return (<li className={this.props.className || 'x-list-item'}>
+			<span>{this.props.text || '[Item]'}</span>
+			<XButton text="X" className="button-close" onClick={this.closeHandle.bind(this)} />
+		</li>);
+	}
+}
+
+
+
+ReactDOM.render(React.createElement(XEditableList, {
+	title: '泛类型列表',
+	addButtonText: '添加',
+	clearButtonText: '清空',
+	ChildrenType: XListItem
+})
+, document.getElementById('container'));
+
+</script>
+
+</body>
+</html>

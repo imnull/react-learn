@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ECharts</title>
+
+<link rel="stylesheet" type="text/css" href="./css/spectrum.css">
+
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+
+<script src="./lib/jquery-1.9.1.js"></script>
+<script src="./lib/spectrum.js"></script>
+
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript">
+
+</script>
+
+<script type="text/babel">
+
+class ColorButton extends React.Component{
+	
+	constructor(props){
+		super(props);
+		console.log(props)
+		this.state = { color: props.color || '#fff' };
+		this.inputChangeHandle = this.inputChangeHandle.bind(this);
+		this.buttonClickHandle = this.buttonClickHandle.bind(this);
+	}
+
+	inputChangeHandle(e){
+		this.setState({
+			color: e.target.value
+		})
+	}
+
+	buttonClickHandle(e){
+		console.log(this.props.id);
+	}
+
+	render(){
+		return (<li className="tool-color-board">
+			<label>{this.props.title}: </label>
+			<input onChange={this.inputChangeHandle} ref="color" type="color" value={this.state.color} />
+			<button onClick={this.buttonClickHandle}>X</button>
+		</li>);
+	}
+}
+
+class ColorButtonList extends React.Component{
+	
+	constructor(props){
+		super(props);
+
+
+		this.state = {
+			title: '',
+			buttonText: this.props.buttonText || 'Add',
+			items: [ { id: Date.now(), color: '#ffffff', title: 'Fore Color' } ]
+		};
+
+		this.inputOnChangeHandle = this.inputOnChangeHandle.bind(this);
+		this.buttonClickHandle = this.buttonClickHandle.bind(this);
+		this.removeItemHandle = this.removeItemHandle.bind(this);
+		this.colorOnChangeHanndle = this.colorOnChangeHanndle.bind(this);
+
+	}
+
+	buttonClickHandle(e){
+		console.log(this.state.title);
+		var item = {
+			id: Date.now(),
+			color: '#ffffff',
+			title: this.state.title
+		};
+		this.setState((prevState) => ({
+			items: prevState.items.concat(item),
+			title: ''
+		}));
+	}
+
+	inputOnChangeHandle(e){
+		this.setState({ title: e.target.value });
+	}
+
+	colorOnChangeHanndle(e){
+		var id = e.target.getAttribute('data-key');
+		var idx = this.state.items.findIndex((it) => { return it.id == id });
+		if(idx > -1){
+			var its = this.state.items.slice(0);
+			its[idx].color = e.target.value;
+			this.setState((prev) => ({ items: its }))
+		}
+	}
+
+	removeItemHandle(e){
+		var id = e.target.getAttribute('data-key');
+		var idx = this.state.items.findIndex((it) => { return it.id == id });
+		if(idx > -1){
+			var its = this.state.items;
+			its.splice(idx, 1);
+			this.setState({ items: its });
+		}
+	}
+
+	render(){
+		return (<div className="tool-color-list">
+		<input onChange={this.inputOnChangeHandle} type="text" value={this.state.title} />
+		<button onClick={this.buttonClickHandle}>{this.state.buttonText}</button>
+		<ul>
+		{this.state.items.map((item, i) => {
+			return i > 0 
+				? (<li key={item.id}>
+				<input
+					onChange={this.colorOnChangeHanndle}
+					data-key={item.id}
+					value={item.color}
+					type="color"
+					/>
+				<button data-key={item.id} onClick={this.removeItemHandle}>X</button>
+				</li>)
+				: (<li key={item.id}>
+				<input
+					onChange={this.colorOnChangeHanndle}
+					data-key={item.id}
+					value={item.color}
+					type="color"
+					/>
+				</li>)
+				;
+			}
+			)}
+			</ul>
+		</div>);
+	}
+
+}
+//<ColorButton key={item.id} id={item.id} color={item.color} title={item.title} />
+
+ReactDOM.render(<ColorButtonList />, document.getElementById('container'));
+
+</script>
+
+</body>
+</html>

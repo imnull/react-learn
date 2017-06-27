@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Using External Plugins</title>
+<script src="./react/react.js"></script>
+<script src="./react/react-dom.js"></script>
+<script src="./react/babel.min.js"></script>
+<style type="text/css">
+
+textarea, div.output{
+	width: 300px;
+	height: 100px;
+	resize: none;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	outline: none;
+	word-break: break-all;
+	padding: 1em;
+	overflow: auto;
+}
+
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/javascript">
+
+var r = ['a', 'b', 'c'].map((s) => (s + '---'));
+
+console.log(r)
+
+</script>
+
+<pre>
+NOTE:
+
+1. textarea的defaultValue属性
+2. dangerouslySetInnerHTML绑定对象赋值应是 { __html: ... } 格式
+
+</pre>
+
+
+<script type="text/babel">
+
+function htmlEncode(s){
+	return s
+		.replace(/&/g, '&amp;')
+		.replace(/"/g, '&quot;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/\n/g, '<br>')
+		.replace(/[ ]/g, '&nbsp;')
+
+		;
+}
+
+class TA extends React.Component{
+	
+	constructor(props){
+		super(props);
+		this.state = { text: 'type something' };
+		this.inputHandle = this.inputHandle.bind(this);
+	}
+
+	inputHandle(e){
+		this.setState({
+			text: e.target.value
+		});
+	}
+
+	safeHtml(){
+		return { __html: htmlEncode(this.state.text) }
+	}
+
+	render(){
+		return (<div>
+			<h3>Input</h3>
+			<textarea
+				onChange={this.inputHandle}
+				value={this.state.text} />
+			<h3>Output</h3>
+			<div className="output" dangerouslySetInnerHTML={this.safeHtml()} />
+		</div>);
+	}
+
+}
+
+ReactDOM.render(
+	<TA title="标题" buttonText="添加" />
+	, document.getElementById('root')
+)
+
+</script>
+
+</body>
+</html>
